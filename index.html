@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Love Letter 💌</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Love Letter 💖</title>
 
-<!-- jQuery + Turn.js -->
+<!-- REQUIRED -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
 
@@ -18,46 +18,13 @@ body{
   justify-content:center;
   align-items:center;
   overflow:hidden;
-  font-family:serif;
-}
-
-/* ENVELOPE */
-#envelope{
-  position:absolute;
-  width:280px;
-  height:180px;
-  background:white;
-  border-radius:14px;
-  box-shadow:0 20px 40px rgba(0,0,0,.25);
-  z-index:10;
-  cursor:pointer;
-}
-
-#flap{
-  position:absolute;
-  top:-90px;
-  width:0;height:0;
-  border-left:140px solid transparent;
-  border-right:140px solid transparent;
-  border-bottom:90px solid #f7b7c4;
-  transform-origin:bottom;
-  transition:1.5s ease;
-}
-
-#tap{
-  position:absolute;
-  bottom:18px;
-  width:100%;
-  text-align:center;
-  color:#d16a86;
-  font-size:18px;
 }
 
 /* BOOK */
 #book{
   width:300px;
   height:420px;
-  visibility:hidden;
+  display:none;
 }
 
 .page{
@@ -72,13 +39,44 @@ body{
   object-fit:contain;
 }
 
+/* ENVELOPE */
+#envelope{
+  position:absolute;
+  width:280px;
+  height:180px;
+  background:white;
+  border-radius:14px;
+  box-shadow:0 20px 40px rgba(0,0,0,.25);
+  cursor:pointer;
+  z-index:10;
+}
+
+#flap{
+  position:absolute;
+  top:-90px;
+  width:0;height:0;
+  border-left:140px solid transparent;
+  border-right:140px solid transparent;
+  border-bottom:90px solid #f7b7c4;
+  transform-origin:bottom;
+  transition:1.2s ease;
+}
+
+#tap{
+  position:absolute;
+  bottom:16px;
+  width:100%;
+  text-align:center;
+  color:#d16a86;
+  font-size:18px;
+}
+
 /* HEARTS */
 .heart{
   position:fixed;
-  bottom:-40px;
-  font-size:18px;
-  animation:floatUp 12s linear infinite;
-  opacity:.85;
+  bottom:-30px;
+  font-size:20px;
+  animation:floatUp 10s linear infinite;
 }
 
 @keyframes floatUp{
@@ -108,46 +106,42 @@ body{
 
 <script>
 /* HEARTS */
-function spawnHearts(){
+function hearts(){
   setInterval(()=>{
-    const h=document.createElement("div");
+    let h=document.createElement("div");
     h.className="heart";
     h.innerHTML="💗";
     h.style.left=Math.random()*100+"vw";
-    h.style.fontSize=(16+Math.random()*20)+"px";
     document.body.appendChild(h);
-    setTimeout(()=>h.remove(),12000);
-  },1400);
+    setTimeout(()=>h.remove(),10000);
+  },1200);
 }
 
-/* WAIT FOR IMAGES */
+/* WAIT FOR IMAGES THEN INIT TURN */
 let loaded=0;
-document.querySelectorAll("#book img").forEach(img=>{
-  img.onload=()=>{
-    loaded++;
-    if(loaded===5) initBook();
-  };
+$("#book img").on("load",function(){
+  loaded++;
+  if(loaded===5){
+    $("#book").turn({
+      width:300,
+      height:420,
+      autoCenter:true,
+      gradients:true,
+      acceleration:true,
+      duration:1800
+    });
+  }
 });
 
-function initBook(){
-  $("#book").turn({
-    width:300,
-    height:420,
-    autoCenter:true,
-    gradients:true,
-    duration:2200
-  });
-}
-
 /* OPEN ENVELOPE */
-document.getElementById("envelope").onclick=()=>{
-  spawnHearts();
-  document.getElementById("flap").style.transform="rotateX(180deg)";
+$("#envelope").on("click",function(){
+  hearts();
+  $("#flap").css("transform","rotateX(180deg)");
   setTimeout(()=>{
-    document.getElementById("envelope").style.display="none";
-    document.getElementById("book").style.visibility="visible";
-  },1500);
-};
+    $("#envelope").hide();
+    $("#book").fadeIn(500);
+  },1200);
+});
 </script>
 
 </body>
