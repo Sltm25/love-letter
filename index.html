@@ -1,92 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>To My Cielo 💖</title>
+<meta charset="UTF-8">
+<title>For You 💖</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@300;400&display=swap" rel="stylesheet">
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(135deg, #ffd6e0, #fff);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Georgia, serif;
+  overflow: hidden;
+}
 
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #ffe6eb, #fff);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Poppins', sans-serif;
-    }
+/* Envelope */
+.envelope-wrapper {
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+}
 
-    .letter {
-      background: rgba(255,255,255,0.9);
-      max-width: 700px;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-      animation: fadeIn 2s ease;
-    }
+.envelope {
+  width: 300px;
+  height: 200px;
+  position: relative;
+  background: #fff;
+  border-radius: 0 0 14px 14px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.25);
+  overflow: hidden;
+  z-index: 5;
+}
 
-    h1 {
-      font-family: 'Great Vibes', cursive;
-      font-size: 52px;
-      text-align: center;
-      color: #e63946;
-      margin-bottom: 20px;
-    }
+.flap {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #ffb6c1;
+  clip-path: polygon(0 0, 50% 60%, 100% 0);
+  transform-origin: top;
+  transition: transform 1.2s ease;
+  z-index: 3;
+}
 
-    p {
-      font-size: 18px;
-      line-height: 1.8;
-      color: #333;
-      margin-bottom: 16px;
-    }
+.letter {
+  position: absolute;
+  bottom: -100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  transition: bottom 1.2s ease;
+  z-index: 2;
+}
 
-    .signature {
-      margin-top: 30px;
-      font-family: 'Great Vibes', cursive;
-      font-size: 36px;
-      color: #e63946;
-      text-align: right;
-    }
+.open .flap {
+  transform: rotateX(180deg);
+}
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+.open .letter {
+  bottom: 0;
+}
+
+.message {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #b30059;
+}
+
+/* PDF */
+iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Hearts */
+.heart {
+  position: absolute;
+  bottom: 0;
+  font-size: 20px;
+  animation: floatUp 3s ease forwards;
+  pointer-events: none;
+}
+
+@keyframes floatUp {
+  from {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-300px) scale(1.8);
+    opacity: 0;
+  }
+}
+</style>
 </head>
+
 <body>
 
-  <div class="letter">
-    <h1>My Love ❤️</h1>
-
-    <p>
-      From the moment you walked into my life, something inside me changed.
-      You became my calm, my chaos, my smile on hard days, and my favorite
-      thought when everything is quiet.
-    </p>
-
-    <p>
-      This little website exists for one simple reason — to remind you that
-      you are deeply loved, endlessly appreciated, and always held close
-      in my heart, no matter the distance or the day.
-    </p>
-
-    <p>
-      If words could wrap around you the way my feelings do, they would feel
-      like home. And until I can say all this in person, let this page
-      whisper it for me.
-    </p>
-
-    <p>
-      Always yours, in every lifetime.
-    </p>
-
-    <div class="signature">
-      — Yours 💕
+<div class="envelope-wrapper" onclick="openLetter()">
+  <div class="envelope" id="envelope">
+    <div class="flap"></div>
+    <div class="letter">
+      <!-- CHANGE PDF NAME IF NEEDED -->
+      <iframe src="love-letter.pdf"></iframe>
     </div>
   </div>
+  <div class="message">Tap to open 💌</div>
+</div>
+
+<!-- Soft romantic music -->
+<audio id="music" preload="auto">
+  <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_9e55d6d41b.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+let opened = false;
+
+function openLetter() {
+  if (opened) return;
+  opened = true;
+
+  document.getElementById('envelope').classList.add('open');
+
+  // Play music
+  document.getElementById('music').play();
+
+  // Heart particles
+  for (let i = 0; i < 20; i++) {
+    createHeart();
+  }
+}
+
+function createHeart() {
+  const heart = document.createElement('div');
+  heart.className = 'heart';
+  heart.innerHTML = '💖';
+  heart.style.left = Math.random() * 100 + 'vw';
+  heart.style.animationDuration = 2 + Math.random() * 2 + 's';
+
+  document.body.appendChild(heart);
+
+  setTimeout(() => {
+    heart.remove();
+  }, 4000);
+}
+</script>
 
 </body>
 </html>
