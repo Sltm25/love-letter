@@ -3,108 +3,101 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Love Letter 💖</title>
+<title>Love Letter 💌</title>
 
 <style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:serif}
 body{
-  margin:0;
-  background:linear-gradient(#ffe4ea,#ffd1dc);
+  background:linear-gradient(#ffe6eb,#ffd6df);
   height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   overflow:hidden;
-  font-family:serif;
 }
 
 /* ENVELOPE */
 #envelope{
-  position:absolute;
-  width:280px;
+  width:260px;
   height:180px;
   background:white;
-  border-radius:14px;
-  box-shadow:0 20px 40px rgba(0,0,0,.25);
-  z-index:10;
+  border-radius:12px;
+  box-shadow:0 20px 40px rgba(0,0,0,.2);
+  position:relative;
+  text-align:center;
+  cursor:pointer;
 }
-
 #flap{
   position:absolute;
   top:-90px;
-  width:0;height:0;
-  border-left:140px solid transparent;
-  border-right:140px solid transparent;
-  border-bottom:90px solid #f7b7c4;
+  left:0;
+  width:0;
+  height:0;
+  border-left:130px solid transparent;
+  border-right:130px solid transparent;
+  border-bottom:90px solid #f5b7c2;
   transform-origin:bottom;
-  transition:1s ease;
+  transition:.9s;
 }
-
 #tap{
   position:absolute;
-  bottom:15px;
+  bottom:18px;
   width:100%;
-  text-align:center;
-  color:#d16a86;
+  color:#d26a86;
   font-size:18px;
 }
 
 /* BOOK */
 #book{
-  width:320px;
-  height:460px;
-  position:relative;
-  perspective:1600px;
   display:none;
+  width:90vw;
+  max-width:340px;
+  height:70vh;
+  position:relative;
+  perspective:1500px;
 }
-
-/* PAGE */
 .page{
   position:absolute;
   width:100%;
   height:100%;
   background:white;
-  box-shadow:0 15px 30px rgba(0,0,0,.3);
+  box-shadow:0 12px 30px rgba(0,0,0,.25);
   transform-origin:left;
-  transition:transform 1.2s ease;
-  backface-visibility:hidden;
+  transition:transform 1s;
 }
-
 .page img{
   width:100%;
   height:100%;
   object-fit:contain;
 }
-
-/* FLIPPED */
 .page.flipped{
   transform:rotateY(-180deg);
 }
 
 /* HEARTS */
 .heart{
-  position:fixed;
-  bottom:-30px;
-  font-size:18px;
-  animation:floatUp 9s linear infinite;
+  position:absolute;
+  bottom:-20px;
+  font-size:22px;
+  animation:float 9s linear forwards;
+  pointer-events:none;
 }
-
-@keyframes floatUp{
-  0%{transform:translateY(0);opacity:0}
-  10%{opacity:1}
-  100%{transform:translateY(-120vh);opacity:0}
+@keyframes float{
+  0%{transform:translateY(0);opacity:1}
+  100%{transform:translateY(-110vh);opacity:0}
 }
 </style>
 </head>
 
 <body>
 
-<!-- Envelope -->
+<!-- ENVELOPE -->
 <div id="envelope">
   <div id="flap"></div>
   <div id="tap">Tap to open 💌</div>
 </div>
 
-<!-- Book -->
+<!-- BOOK -->
 <div id="book">
   <div class="page"><img src="page1.jpg"></div>
   <div class="page"><img src="page2.jpg"></div>
@@ -114,94 +107,51 @@ body{
 </div>
 
 <script>
+const envelope = document.getElementById("envelope");
+const flap = document.getElementById("flap");
+const book = document.getElementById("book");
 const pages = document.querySelectorAll(".page");
 let index = 0;
 
 /* Stack pages */
 pages.forEach((p,i)=>p.style.zIndex = pages.length - i);
 
-/* Hearts */
-setInterval(()=>{
-  let h=document.createElement("div");
-  h.className="heart";
-  h.innerHTML="💗";
-  h.style.left=Math.random()*100+"vw";
-  document.body.appendChild(h);
-  setTimeout(()=>h.remove(),9000);
-},1400);
-
 /* Open envelope */
-document.getElementById("envelope").onclick=()=>{
+envelope.addEventListener("touchstart", ()=>{
   flap.style.transform="rotateX(180deg)";
   setTimeout(()=>{
     envelope.style.display="none";
     book.style.display="block";
   },900);
-};
+});
 
-/* Tap left/right to flip */
-document.getElementById("book").onclick=(e)=>{
-  const half = window.innerWidth / 2;
+/* Page flip – mobile safe */
+book.addEventListener("touchstart",(e)=>{
+  const x = e.touches[0].clientX;
+  const mid = window.innerWidth / 2;
 
-  if(e.clientX > half){
-    // NEXT PAGE
+  if(x > mid){
     if(index < pages.length){
       pages[index].classList.add("flipped");
       index++;
     }
   } else {
-    // PREVIOUS PAGE
     if(index > 0){
       index--;
       pages[index].classList.remove("flipped");
     }
   }
-};
-<script>
-const pages = document.querySelectorAll(".page");
-let index = 0;
+});
 
-/* Stack pages */
-pages.forEach((p,i)=>p.style.zIndex = pages.length - i);
-
-/* Floating hearts */
+/* Hearts */
 setInterval(()=>{
-  const h = document.createElement("div");
-  h.className = "heart";
-  h.innerHTML = "💗";
-  h.style.left = Math.random() * 100 + "vw";
+  const h=document.createElement("div");
+  h.className="heart";
+  h.innerHTML="💗";
+  h.style.left=Math.random()*100+"vw";
   document.body.appendChild(h);
   setTimeout(()=>h.remove(),9000);
-},1400);
-
-/* Open envelope */
-document.getElementById("envelope").addEventListener("touchstart", ()=>{
-  flap.style.transform = "rotateX(180deg)";
-  setTimeout(()=>{
-    envelope.style.display="none";
-    book.style.display="block";
-  },900);
-});
-
-/* PAGE FLIP (TOUCH-BASED – WORKS ON PHONE) */
-document.getElementById("book").addEventListener("touchstart", (e)=>{
-  const touchX = e.touches[0].clientX;
-  const screenMid = window.innerWidth / 2;
-
-  if(touchX > screenMid){
-    // NEXT PAGE
-    if(index < pages.length){
-      pages[index].classList.add("flipped");
-      index++;
-    }
-  } else {
-    // PREVIOUS PAGE
-    if(index > 0){
-      index--;
-      pages[index].classList.remove("flipped");
-    }
-  }
-});
+},1500);
 </script>
 
 </body>
