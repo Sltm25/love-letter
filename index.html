@@ -3,50 +3,41 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>My Love Letter 💌</title>
+<title>Love Letter 💌</title>
 
-<!-- jQuery (REQUIRED) -->
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-<!-- Turn.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
 
 <style>
-html,body{
+body{
   margin:0;
-  padding:0;
-  height:100%;
   background:linear-gradient(#ffe4ea,#ffd1dc);
+  height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   overflow:hidden;
-  font-family:cursive;
 }
 
-/* Envelope */
 #envelope{
   width:280px;
   height:180px;
   background:white;
   border-radius:12px;
   box-shadow:0 20px 40px rgba(0,0,0,.25);
-  position:relative;
+  position:absolute;
   cursor:pointer;
-  z-index:10;
 }
 
 #flap{
   position:absolute;
   top:-90px;
-  left:0;
-  width:0;
-  height:0;
+  width:0;height:0;
   border-left:140px solid transparent;
   border-right:140px solid transparent;
   border-bottom:90px solid #f7b7c4;
   transform-origin:bottom;
-  transition:transform 1.5s ease;
+  transition:1.5s;
 }
 
 #tap{
@@ -57,14 +48,12 @@ html,body{
   color:#d16a86;
 }
 
-/* Book */
 #book{
   width:300px;
   height:420px;
-  display:none;
+  visibility:hidden;
 }
 
-/* Pages */
 .page{
   width:300px;
   height:420px;
@@ -76,31 +65,16 @@ html,body{
   height:100%;
   object-fit:contain;
 }
-
-/* Hearts */
-.heart{
-  position:absolute;
-  font-size:22px;
-  animation:float 8s linear infinite;
-  opacity:.8;
-}
-
-@keyframes float{
-  from{transform:translateY(100vh);opacity:0}
-  to{transform:translateY(-10vh);opacity:1}
-}
 </style>
 </head>
 
 <body>
 
-<!-- Envelope -->
 <div id="envelope">
   <div id="flap"></div>
   <div id="tap">Tap to open 💌</div>
 </div>
 
-<!-- Book -->
 <div id="book">
   <div class="page"><img src="page1.jpg"></div>
   <div class="page"><img src="page2.jpg"></div>
@@ -109,47 +83,35 @@ html,body{
   <div class="page"><img src="page5.jpg"></div>
 </div>
 
-<!-- Music -->
-<audio id="music" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_4cdbd0c18d.mp3" type="audio/mpeg">
-</audio>
-
 <script>
-let opened=false;
+const images = document.querySelectorAll("#book img");
+let loaded = 0;
 
-document.getElementById("envelope").addEventListener("click",()=>{
-  if(opened) return;
-  opened=true;
+images.forEach(img=>{
+  img.onload = ()=>{
+    loaded++;
+    if(loaded === images.length){
+      initBook();
+    }
+  };
+});
 
-  // Open flap
+function initBook(){
+  $("#book").css("visibility","visible").turn({
+    width:300,
+    height:420,
+    autoCenter:true,
+    gradients:true,
+    duration:2000
+  });
+}
+
+document.getElementById("envelope").onclick = ()=>{
   document.getElementById("flap").style.transform="rotateX(180deg)";
-
-  // Start music (mobile-safe)
-  const music=document.getElementById("music");
-  music.play().catch(()=>{});
-
-  // Hearts
-  setInterval(()=>{
-    let h=document.createElement("div");
-    h.className="heart";
-    h.innerHTML="💖";
-    h.style.left=Math.random()*100+"vw";
-    document.body.appendChild(h);
-    setTimeout(()=>h.remove(),8000);
-  },700);
-
-  // Show book
   setTimeout(()=>{
     document.getElementById("envelope").style.display="none";
-    $("#book").fadeIn(500).turn({
-      width:300,
-      height:420,
-      autoCenter:true,
-      gradients:true,
-      duration:2000
-    });
-  },1500);
-});
+  },1200);
+};
 </script>
 
 </body>
