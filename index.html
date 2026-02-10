@@ -3,219 +3,86 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For You 💖</title>
+<title>My Love Letter 💌</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/turn.js/4.1.0/turn.min.js"></script>
 
 <style>
-/* ---------- Base ---------- */
 body {
   margin: 0;
-  height: 100vh;
-  background: linear-gradient(135deg, #ffd6e0, #fff);
+  background: #fde2e7;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Georgia, serif;
+  height: 100vh;
   overflow: hidden;
+  font-family: 'Playfair Display', serif;
 }
 
-/* ---------- Envelope ---------- */
-.envelope-wrapper {
-  text-align: center;
-  cursor: pointer;
-}
-
-.envelope {
-  width: 85vw;
-  max-width: 320px;
-  height: 55vw;
-  max-height: 220px;
-  background: #fff;
-  border-radius: 0 0 16px 16px;
-  box-shadow: 0 25px 60px rgba(0,0,0,0.3);
-  position: relative;
-  overflow: hidden;
-}
-
-.flap {
-  position: absolute;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: #ffb6c1;
-  clip-path: polygon(0 0, 50% 65%, 100% 0);
-  transform-origin: top;
-  transition: transform 1.8s ease;
-  z-index: 3;
-}
-
-.envelope.open .flap {
-  transform: rotateX(180deg);
-}
-
-/* ---------- Hearts ---------- */
-.heart {
-  position: absolute;
-  bottom: -40px;
-  font-size: 20px;
-  opacity: 0.8;
-  animation: floatSlow linear forwards;
-  pointer-events: none;
-}
-
-@keyframes floatSlow {
-  from { transform: translateY(0) scale(1); opacity: 0; }
-  10% { opacity: 1; }
-  to { transform: translateY(-70vh) scale(1.6); opacity: 0; }
-}
-
-/* ---------- Book (phone-sized) ---------- */
-.book {
+#book {
   width: 90vw;
-  max-width: 340px;
-  height: 75vh;
-  max-height: 520px;
-  perspective: 1600px;
-  display: none;
-  position: relative;
+  max-width: 360px;
+  height: 80vh;
 }
 
-/* ---------- Page ---------- */
 .page {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  transform-origin: left;
-  transform-style: preserve-3d;
-  transition: transform 2.8s ease;
-  box-shadow: 0 18px 45px rgba(0,0,0,0.25);
-  cursor: pointer;
-  background: #fff;
+  background: white;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.25);
 }
 
 .page img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  border-radius: 10px;
-  backface-visibility: hidden;
 }
 
-/* Back of page */
-.page::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: #fff0f5;
-  transform: rotateY(180deg);
-  backface-visibility: hidden;
+/* floating hearts */
+.heart {
+  position: fixed;
+  bottom: -30px;
+  animation: float 10s linear infinite;
+  opacity: 0.6;
+  font-size: 22px;
 }
 
-/* ---------- Corner curl ---------- */
-.page::before {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: 50px;
-  height: 50px;
-  background: linear-gradient(
-    135deg,
-    transparent 50%,
-    rgba(0,0,0,0.18)
-  );
-  border-radius: 0 0 10px 0;
-  transition: transform 0.9s ease;
-}
-
-/* Touch / hover hint */
-.page:hover::before {
-  transform: rotate(-10deg);
-}
-
-/* Flip */
-.page.flipped {
-  transform: rotateY(-180deg);
-}
-
-/* Stack order */
-#p1 { z-index: 3; }
-#p2 { z-index: 2; }
-#p3 { z-index: 1; }
-
-/* Hint text */
-.hint {
-  margin-top: 14px;
-  text-align: center;
-  color: #b30059;
-  font-size: 16px;
+@keyframes float {
+  0% { transform: translateY(0) translateX(0); }
+  100% { transform: translateY(-120vh) translateX(20px); }
 }
 </style>
 </head>
 
 <body>
 
-<!-- Envelope -->
-<div class="envelope-wrapper" onclick="openLetter()" id="start">
-  <div class="envelope" id="envelope">
-    <div class="flap"></div>
-  </div>
-  <div class="hint">Tap to open 💌</div>
+<div id="book">
+  <div class="page"><img src="page1.jpg"></div>
+  <div class="page"><img src="page2.jpg"></div>
+  <div class="page"><img src="page3.jpg"></div>
+  <div class="page"><img src="page4.jpg"></div>
+  <div class="page"><img src="page5.jpg"></div>
 </div>
-
-<!-- Flipbook -->
-<div class="book" id="book">
-  <div class="page" id="p1" onclick="flip(this)">
-    <img src="images/page1.jpg">
-  </div>
-  <div class="page" id="p2" onclick="flip(this)">
-    <img src="images/page2.jpg">
-  </div>
-  <div class="page" id="p3" onclick="flip(this)">
-    <img src="images/page3.jpg">
-  </div>
-  <div class="hint">Tap the page corner 💕</div>
-</div>
-
-<!-- Music -->
-<audio id="music" preload="auto" loop>
-  <source src="https://cdn.pixabay.com/download/audio/2022/10/26/audio_3e5a3c2a4b.mp3" type="audio/mpeg">
-</audio>
 
 <script>
-let opened = false;
+$("#book").turn({
+  width: 360,
+  height: window.innerHeight * 0.8,
+  autoCenter: true,
+  duration: 2000,
+  gradients: true,
+  acceleration: true
+});
 
-function openLetter() {
-  if (opened) return;
-  opened = true;
-
-  document.getElementById("envelope").classList.add("open");
-
-  const music = document.getElementById("music");
-  music.volume = 0.3;
-  music.play();
-
-  let hearts = setInterval(createHeart, 900);
-  setTimeout(() => clearInterval(hearts), 12000);
-
-  setTimeout(() => {
-    document.getElementById("start").style.display = "none";
-    document.getElementById("book").style.display = "block";
-  }, 2200);
-}
-
-function createHeart() {
+// hearts
+setInterval(() => {
   const h = document.createElement("div");
   h.className = "heart";
-  h.innerHTML = "💖";
   h.style.left = Math.random() * 100 + "vw";
-  h.style.animationDuration = (7 + Math.random() * 4) + "s";
+  h.textContent = "💗";
   document.body.appendChild(h);
-  setTimeout(() => h.remove(), 12000);
-}
-
-function flip(page) {
-  page.classList.add("flipped");
-}
+  setTimeout(() => h.remove(), 10000);
+}, 1200);
 </script>
 
 </body>
