@@ -157,6 +157,51 @@ document.getElementById("book").onclick=(e)=>{
     }
   }
 };
+<script>
+const pages = document.querySelectorAll(".page");
+let index = 0;
+
+/* Stack pages */
+pages.forEach((p,i)=>p.style.zIndex = pages.length - i);
+
+/* Floating hearts */
+setInterval(()=>{
+  const h = document.createElement("div");
+  h.className = "heart";
+  h.innerHTML = "💗";
+  h.style.left = Math.random() * 100 + "vw";
+  document.body.appendChild(h);
+  setTimeout(()=>h.remove(),9000);
+},1400);
+
+/* Open envelope */
+document.getElementById("envelope").addEventListener("touchstart", ()=>{
+  flap.style.transform = "rotateX(180deg)";
+  setTimeout(()=>{
+    envelope.style.display="none";
+    book.style.display="block";
+  },900);
+});
+
+/* PAGE FLIP (TOUCH-BASED – WORKS ON PHONE) */
+document.getElementById("book").addEventListener("touchstart", (e)=>{
+  const touchX = e.touches[0].clientX;
+  const screenMid = window.innerWidth / 2;
+
+  if(touchX > screenMid){
+    // NEXT PAGE
+    if(index < pages.length){
+      pages[index].classList.add("flipped");
+      index++;
+    }
+  } else {
+    // PREVIOUS PAGE
+    if(index > 0){
+      index--;
+      pages[index].classList.remove("flipped");
+    }
+  }
+});
 </script>
 
 </body>
