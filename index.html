@@ -26,7 +26,6 @@ body{
   border-radius:14px;
   box-shadow:0 20px 40px rgba(0,0,0,.25);
   z-index:10;
-  cursor:pointer;
 }
 
 #flap{
@@ -54,7 +53,7 @@ body{
   width:320px;
   height:460px;
   position:relative;
-  perspective:1400px;
+  perspective:1600px;
   display:none;
 }
 
@@ -67,6 +66,7 @@ body{
   box-shadow:0 15px 30px rgba(0,0,0,.3);
   transform-origin:left;
   transition:transform 1.2s ease;
+  backface-visibility:hidden;
 }
 
 .page img{
@@ -84,8 +84,8 @@ body{
 .heart{
   position:fixed;
   bottom:-30px;
-  font-size:20px;
-  animation:floatUp 8s linear infinite;
+  font-size:18px;
+  animation:floatUp 9s linear infinite;
 }
 
 @keyframes floatUp{
@@ -114,36 +114,47 @@ body{
 </div>
 
 <script>
-const pages=document.querySelectorAll(".page");
-let index=0;
+const pages = document.querySelectorAll(".page");
+let index = 0;
 
-/* STACK ORDER */
-pages.forEach((p,i)=>p.style.zIndex=pages.length-i);
+/* Stack pages */
+pages.forEach((p,i)=>p.style.zIndex = pages.length - i);
 
-/* HEARTS */
+/* Hearts */
 setInterval(()=>{
   let h=document.createElement("div");
   h.className="heart";
   h.innerHTML="💗";
   h.style.left=Math.random()*100+"vw";
   document.body.appendChild(h);
-  setTimeout(()=>h.remove(),8000);
-},1200);
+  setTimeout(()=>h.remove(),9000);
+},1400);
 
-/* OPEN ENVELOPE */
+/* Open envelope */
 document.getElementById("envelope").onclick=()=>{
-  document.getElementById("flap").style.transform="rotateX(180deg)";
+  flap.style.transform="rotateX(180deg)";
   setTimeout(()=>{
     envelope.style.display="none";
     book.style.display="block";
   },900);
 };
 
-/* TAP TO FLIP */
-document.getElementById("book").onclick=()=>{
-  if(index<pages.length){
-    pages[index].classList.add("flipped");
-    index++;
+/* Tap left/right to flip */
+document.getElementById("book").onclick=(e)=>{
+  const half = window.innerWidth / 2;
+
+  if(e.clientX > half){
+    // NEXT PAGE
+    if(index < pages.length){
+      pages[index].classList.add("flipped");
+      index++;
+    }
+  } else {
+    // PREVIOUS PAGE
+    if(index > 0){
+      index--;
+      pages[index].classList.remove("flipped");
+    }
   }
 };
 </script>
